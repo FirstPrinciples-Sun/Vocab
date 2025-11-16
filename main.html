@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Terms for Startup Team - Modern Theme</title>
+    <title>Business Terms for Startup Team - Multi-Theme</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <script>
-        // Tailwind Customization (Modern Tech Theme: Deep Slate + Vibrant Cyan)
+        // Tailwind Customization: Pointing colors to CSS Variables
         tailwind.config = {
             theme: {
                 extend: {
@@ -22,10 +22,15 @@
                         sans: ['Kanit', 'Inter', 'sans-serif'],
                     },
                     colors: {
-                        'brand-primary': '#0F172A', // slate-900
-                        'brand-secondary': '#1E293B', // slate-800
-                        'brand-accent': '#22D3EE', // cyan-400
-                        'brand-accent-hover': '#67E8F9', // cyan-300
+                        // These colors are now controlled by CSS Variables
+                        'brand-primary': 'var(--color-primary)',
+                        'brand-secondary': 'var(--color-secondary)',
+                        'brand-accent': 'var(--color-accent)',
+                        'brand-accent-hover': 'var(--color-accent-hover)',
+                        'brand-primary-dim': 'var(--color-primary-dim)', // For example box
+                        'brand-text-main': 'var(--color-text-main)',
+                        'brand-text-sub': 'var(--color-text-sub)',
+                        'brand-text-on-accent': 'var(--color-text-on-accent)',
                     },
                     keyframes: {
                         fadeInUp: {
@@ -42,22 +47,62 @@
     </script>
 
     <style>
-        html, body { height: 100%; overflow: hidden; }
-        body {
-            /* Added a subtle gradient for a more modern feel */
-            background-image: linear-gradient(to bottom right, #0F172A, #0A101F);
-            color: #E5E7EB;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        html { height: 100%; }
+        body { 
+            height: 100%; 
+            overflow: hidden; 
             font-family: 'Kanit', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            
+            /* Smooth color transitions for theme switching */
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        /* Custom Scrollbar for Search Results */
+
+        /* --- CSS Variables for Theming --- */
+        
+        /* 1. Default Theme (Dark Cyan) */
+        :root, .theme-dark-cyan {
+            --color-primary: #0F172A; /* slate-900 */
+            --color-secondary: #1E293B; /* slate-800 */
+            --color-accent: #22D3EE; /* cyan-400 */
+            --color-accent-hover: #67E8F9; /* cyan-300 */
+            --color-primary-dim: #020617; /* slate-950/50 */
+            --color-text-main: #F1F5F9; /* slate-100 */
+            --color-text-sub: #94A3B8; /* slate-400 */
+            --color-text-on-accent: #0F172A; /* slate-900 */
+        }
+        
+        /* 2. Warm Amber Theme (Dark) */
+        .theme-dark-amber {
+            --color-primary: #18181B; /* zinc-900 */
+            --color-secondary: #27272A; /* zinc-800 */
+            --color-accent: #F59E0B; /* amber-500 */
+            --color-accent-hover: #FBBF24; /* amber-400 */
+            --color-primary-dim: #18181B; /* zinc-900/50 */
+            --color-text-main: #F4F4F5; /* zinc-100 */
+            --color-text-sub: #A1A1AA; /* zinc-400 */
+            --color-text-on-accent: #18181B; /* zinc-900 */
+        }
+        
+        /* 3. Ocean Breeze Theme (Light) */
+        .theme-light-ocean {
+            --color-primary: #F0F9FF; /* sky-50 */
+            --color-secondary: #FFFFFF;
+            --color-accent: #0E7490; /* cyan-700 */
+            --color-accent-hover: #164E63; /* cyan-900 */
+            --color-primary-dim: #E0F2FE; /* sky-100/50 */
+            --color-text-main: #1E293B; /* slate-800 */
+            --color-text-sub: #475569; /* slate-600 */
+            --color-text-on-accent: #FFFFFF;
+        }
+        
+        /* --- End Theming --- */
+        
+        /* Custom Scrollbar */
         .search-results::-webkit-scrollbar { width: 8px; }
-        .search-results::-webkit-scrollbar-thumb { background-color: #22D3EE; border-radius: 4px; }
-        .search-results::-webkit-scrollbar-track { background-color: #1E293B; }
+        .search-results::-webkit-scrollbar-thumb { background-color: var(--color-accent); border-radius: 4px; }
+        .search-results::-webkit-scrollbar-track { background-color: var(--color-secondary); }
         
         /* Slide styles */
         .slide {
@@ -71,32 +116,60 @@
             transition: opacity 0.4s ease-in-out;
             visibility: hidden;
         }
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+        .slide-content { animation: fade-in-up 0.6s ease-out forwards; }
+        
+        /* Theme Switcher Button Styles */
+        .theme-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 9999px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
         }
-        .slide-content {
-             animation: fade-in-up 0.6s ease-out forwards;
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+        .theme-btn.active {
+            border-color: var(--color-accent);
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+
+        /* General element transitions for theme switching */
+        .slide-content, .bg-brand-secondary, .bg-brand-accent, .text-brand-text-main, .text-brand-text-sub, .border-slate-700, .bg-brand-primary-dim {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
     </style>
 </head>
-<body class="bg-brand-primary">
+<body class="bg-brand-primary text-brand-text-main theme-dark-cyan"> <!-- Default theme class -->
 
     <!-- Main App Container -->
     <div id="app" class="relative w-full h-full max-w-7xl mx-auto flex flex-col p-4 md:p-8">
 
-        <!-- Header with Title and Search -->
-        <header class="flex-shrink-0 flex justify-between items-center mb-4 z-20">
-            <h1 class="text-xl md:text-2xl font-bold text-white">
-                📘 Business & Tech Terms
-            </h1>
-            <div class="relative">
+        <!-- Header with Title, Theme Switcher, and Search -->
+        <header class="flex-shrink-0 flex flex-col md:flex-row justify-between items-start md:items-center mb-4 z-20">
+            <!-- Left Side: Title & Theme Switcher -->
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold text-brand-text-main">
+                    📘 Business & Tech Terms
+                </h1>
+                <!-- Theme Switcher -->
+                <div id="theme-switcher" class="flex items-center gap-3 mt-2">
+                    <button class="theme-btn active" data-theme="theme-dark-cyan" style="background-color: #22D3EE;"></button>
+                    <button class="theme-btn" data-theme="theme-dark-amber" style="background-color: #F59E0B;"></button>
+                    <button class="theme-btn" data-theme="theme-light-ocean" style="background-color: #F0F9FF; border: 1px solid #0E7490;"></button>
+                </div>
+            </div>
+            
+            <!-- Right Side: Search -->
+            <div class="relative mt-4 md:mt-0">
                 <input 
                     type="search" 
                     id="search-box"
                     placeholder="🔍 ค้นหาคำศัพท์..."
-                    class="w-48 md:w-64 bg-brand-secondary border-2 border-transparent focus:border-brand-accent focus:ring-0 text-white rounded-lg px-4 py-2 transition-all duration-300"
+                    class="w-64 bg-brand-secondary border-2 border-transparent focus:border-brand-accent focus:ring-0 text-brand-text-main rounded-lg px-4 py-2 transition-all duration-300"
                 >
                 <div id="search-results-container" class="absolute top-full right-0 mt-2 w-64 max-h-80 overflow-y-auto bg-brand-secondary rounded-lg shadow-lg z-50 hidden search-results"></div>
             </div>
@@ -108,7 +181,7 @@
         <!-- Footer with Navigation and Progress Bar -->
         <footer class="flex-shrink-0 mt-4 z-20">
             <div class="flex justify-between items-center">
-                <button id="prev-button" class="px-6 py-2 bg-brand-secondary text-gray-200 hover:bg-slate-700 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button id="prev-button" class="px-6 py-2 bg-brand-secondary text-brand-text-sub hover:bg-opacity-80 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     ย้อนกลับ
                 </button>
                 <div class="flex-grow mx-4">
@@ -116,8 +189,7 @@
                         <div id="progress-bar" class="bg-brand-accent h-2.5 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
                     </div>
                 </div>
-                <!-- Updated button for better contrast: dark text on light button -->
-                <button id="next-button" class="px-6 py-2 bg-brand-accent text-slate-900 font-semibold hover:bg-brand-accent-hover rounded-lg transition-colors duration-300">
+                <button id="next-button" class="px-6 py-2 bg-brand-accent text-brand-text-on-accent font-semibold hover:bg-brand-accent-hover rounded-lg transition-colors duration-300">
                     ถัดไป
                 </button>
             </div>
@@ -192,6 +264,8 @@
             { category: 'Key Tech Terms', title: 'LLM (Large Language Model) — โมเดลภาษาขนาดใหญ่', description: 'AI ประเภทหนึ่งที่ถูกฝึกฝนด้วยข้อมูลข้อความมหาศาล ทำให้เชี่ยวชาญด้านการเข้าใจ, สรุป, แปล, และสร้างข้อความ', example: '“ฟีเจอร์สรุปบทความนี้ เราใช้ LLM ช่วยประมวลผล”' },
             { category: 'Key Tech Terms', title: 'API (Application Programming Interface)', description: 'ช่องทางกลางที่ทำให้ซอฟต์แวร์ A "คุย" หรือ "ขอข้อมูล" จากซอฟต์แวร์ B ได้ โดยไม่ต้องรู้ว่า B ทำงานยังไง', example: '“เราต้องเชื่อม API กับระบบจ่ายเงิน เพื่อให้ลูกค้าชำระเงินได้”' },
             { category: 'Key Tech Terms', title: 'JSON (JavaScript Object Notation)', description: 'รูปแบบการเก็บและส่งข้อมูลที่ "อ่านง่าย" ทั้งสำหรับคนและคอมพิวเตอร์ ใช้บ่อยมากในการรับ-ส่งข้อมูลผ่าน API', example: '“API ของเขาจะส่งข้อมูลกลับมาเป็นไฟล์ JSON”' },
+            { category: 'Key Tech Terms', title: 'Cloud (IaaS, PaaS, SaaS)', description: 'การใช้ทรัพยากรคอมพิวเตอร์ (เช่น เซิร์ฟเวอร์, Database) ผ่านอินเทอร์เน็ต แบ่งเป็น 3 ระดับ: IaaS (โครงสร้าง), PaaS (แพลตฟอร์ม), SaaS (ซอฟต์แวร์)', example: '“เราจะรันแอปบน Cloud โดยใช้ PaaS เพื่อให้ Scale ได้ง่าย”' },
+            { category: 'Key Tech Terms', title: 'Microservices — ไมโครเซอร์วิส', description: 'สถาปัตยกรรมที่แบ่งแอปขนาดใหญ่ออกเป็น "บริการย่อยๆ" ที่ทำงานอิสระต่อกัน ทำให้แก้งาน, อัปเดต, และ Scale ได้ทีละส่วน', example: '“เราจะใช้ Microservices แยกส่วนจ่ายเงินออกจากส่วน User”' },
 
             // Outro Slide
             { type: 'outro', title: 'You\'ve learned all the terms!', subtitle: 'ตอนนี้คุณพร้อมที่จะ "คุยภาษาเดียวกัน" กับทีมแล้ว', buttonText: 'เรียนรู้อีกครั้ง' }
@@ -217,32 +291,32 @@
                 switch (data.type) {
                     case 'intro':
                         content = `<div class="text-center slide-content">
-                                     <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">${data.title}</h1>
-                                     <p class="text-xl md:text-2xl text-slate-400 mb-8">${data.subtitle}</p>
-                                     <button class="start-button bg-brand-accent text-slate-900 font-semibold py-3 px-8 rounded-lg text-lg hover:bg-brand-accent-hover transition-colors">${data.buttonText}</button>
+                                     <h1 class="text-4xl md:text-6xl font-bold text-brand-text-main mb-4">${data.title}</h1>
+                                     <p class="text-xl md:text-2xl text-brand-text-sub mb-8">${data.subtitle}</p>
+                                     <button class="start-button bg-brand-accent text-brand-text-on-accent font-semibold py-3 px-8 rounded-lg text-lg hover:bg-brand-accent-hover transition-colors">${data.buttonText}</button>
                                    </div>`;
                         break;
                     case 'category':
                         content = `<div class="text-center slide-content">
-                                     <h2 class="text-3xl md:text-5xl font-bold text-white mb-3">${data.title}</h2>
-                                     <p class="text-lg md:text-xl text-slate-400">${data.subtitle}</p>
+                                     <h2 class="text-3xl md:text-5xl font-bold text-brand-text-main mb-3">${data.title}</h2>
+                                     <p class="text-lg md:text-xl text-brand-text-sub">${data.subtitle}</p>
                                    </div>`;
                         break;
                     case 'outro':
                          content = `<div class="text-center slide-content">
-                                     <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">🎉 ${data.title}</h1>
-                                     <p class="text-xl md:text-2xl text-slate-400 mb-8">${data.subtitle}</p>
-                                     <button class="restart-button bg-brand-accent text-slate-900 font-semibold py-3 px-8 rounded-lg text-lg hover:bg-brand-accent-hover transition-colors">${data.buttonText}</button>
+                                     <h1 class="text-4xl md:text-6xl font-bold text-brand-text-main mb-4">🎉 ${data.title}</h1>
+                                     <p class="text-xl md:text-2xl text-brand-text-sub mb-8">${data.subtitle}</p>
+                                     <button class="restart-button bg-brand-accent text-brand-text-on-accent font-semibold py-3 px-8 rounded-lg text-lg hover:bg-brand-accent-hover transition-colors">${data.buttonText}</button>
                                    </div>`;
                         break;
                     default: // Term slide
-                        content = `<div class="w-full max-w-4xl bg-brand-secondary rounded-3xl p-8 md:p-12 shadow-2xl slide-content border border-slate-700">
+                        content = `<div class="w-full max-w-4xl bg-brand-secondary rounded-3xl p-8 md:p-12 shadow-2xl slide-content border border-white/10">
                                      <p class="text-base text-brand-accent font-semibold mb-3">${data.category}</p>
-                                     <h2 classS="text-3xl md:text-4xl font-bold text-white mb-4">${data.title}</h2>
-                                     <p class="text-slate-300 text-lg leading-loose mb-6">${data.description}</p>
-                                     <div class="bg-slate-900/50 border-l-4 border-brand-accent p-4 rounded-r-lg">
-                                         <p class="font-semibold text-slate-200 mb-1">ตัวอย่างการใช้:</p>
-                                         <p class="text-slate-400 italic">${data.example}</p>
+                                     <h2 class="text-3xl md:text-4xl font-bold text-brand-text-main mb-4">${data.title}</h2>
+                                     <p class="text-brand-text-sub text-lg leading-loose mb-6">${data.description}</p>
+                                     <div class="bg-brand-primary-dim border-l-4 border-brand-accent p-4 rounded-r-lg">
+                                         <p class="font-semibold text-brand-text-main mb-1">ตัวอย่างการใช้:</p>
+                                         <p class="text-brand-text-sub italic">${data.example}</p>
                                      </div>
                                    </div>`;
                         break;
@@ -289,7 +363,7 @@
                 if (results.length > 0) {
                     results.forEach(result => {
                         const item = document.createElement('div');
-                        item.className = 'p-3 hover:bg-slate-700 cursor-pointer text-slate-200';
+                        item.className = 'p-3 hover:bg-slate-700 cursor-pointer text-brand-text-main';
                         item.textContent = result.data.title;
                         item.addEventListener('click', () => {
                             showSlide(result.index);
@@ -343,6 +417,25 @@
                 } else if (e.key === 'ArrowLeft') {
                     prevButton.click();
                 }
+            });
+            
+            // --- NEW: Theme Switcher Logic ---
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const body = document.body;
+            
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.dataset.theme;
+                    
+                    // Remove all theme classes
+                    body.classList.remove('theme-dark-cyan', 'theme-dark-amber', 'theme-light-ocean');
+                    // Add the selected theme
+                    body.classList.add(theme);
+                    
+                    // Update active button
+                    document.querySelector('.theme-btn.active').classList.remove('active');
+                    btn.classList.add('active');
+                });
             });
 
             // --- Initialization ---
